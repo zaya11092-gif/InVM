@@ -13,22 +13,33 @@
     </header>
 
     <main>
-        <section class="controls">
+        <aside class="controls">
+            <h2>Boot Center</h2>
             <label>ISO file (.iso):
                 <input type="file" id="isoInput" accept=".iso" />
             </label>
-            <button id="loadIsoBtn">Load ISO and Reboot</button>
+            <button id="loadIsoBtn" class="primary">Load & Reboot</button>
 
             <label>Hard disk size (GB):
-                <input type="number" id="diskSize" min="1" max="32" value="10" />
+                <input type="number" id="diskSize" min="1" max="64" value="10" />
             </label>
             <button id="createDiskBtn">Create Virtual HDA</button>
 
-            <button id="powerBtn">Power On/Restart</button>
-            <button id="powerOffBtn">Power Off</button>
+            <div class="action-row">
+                <button id="powerBtn" class="primary">Power On / Restart</button>
+                <button id="powerOffBtn" class="danger">Power Off</button>
+            </div>
 
-            <pre id="statusLog"></pre>
-        </section>
+            <h3>Status</h3>
+            <pre id="statusLog" class="status-log"></pre>
+
+            <h3>Boot Terminal</h3>
+            <div id="bootTerminal" class="terminal" aria-live="polite"></div>
+            <div class="terminal-input">
+                <input type="text" id="terminalCmd" placeholder="Enter command (eg: bootloader reload)" />
+                <button id="terminalSend">Send</button>
+            </div>
+        </aside>
 
         <section class="vm">
             <div id="screen"></div>

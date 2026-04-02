@@ -1,7 +1,15 @@
+const writeTerminal = (message) => {
+    const terminal = document.getElementById("bootTerminal");
+    const now = new Date().toLocaleTimeString();
+    terminal.textContent += `[${now}] ${message}\n`;
+    terminal.scrollTop = terminal.scrollHeight;
+};
+
 const log = (message) => {
     const statusLog = document.getElementById("statusLog");
     statusLog.textContent += `[${new Date().toISOString()}] ${message}\n`;
     statusLog.scrollTop = statusLog.scrollHeight;
+    writeTerminal(message);
 };
 
 let emulator = null;
@@ -52,8 +60,17 @@ const powerOn = () => {
     log("Starting emulator with config: " + JSON.stringify({ memory_size: cfg.memory_size, vga_memory_size: cfg.vga_memory_size, hda: cfg.hda ? (cfg.hda.url ? "url" : `size ${diskSize}GB`) : "none", cdrom: lastIsoUrl ? "loaded" : "none" }));
 
     emulator = new V86Starter(cfg);
-    emulator.add_listener("emulator-ready", () => log("Emulator ready"));
-    emulator.add_listener("emulator-error", (err) => log(`Emulator error: ${err}`));
+    emulator.add_listener("emulator-ready", () => {
+        log("Emulator ready.");
+    });
+    emulator.add_listener("emulator-error", (err) => {
+        log(`Emulator error: ${err}`);
+        writeTerminal("Boot terminal ready: ISO failover available. Type 'help' for supported commands.");
+    });
+    emulator.add_listener("serial0-output-char", (char) => {
+        // Keep a simple fallback serial log in boot terminal in case visual console fails
+        writeTerminal(char);
+    });
 };
 
 const powerOff = () => {
@@ -98,6 +115,48 @@ window.addEventListener("DOMContentLoaded", () => {
             return;
         }
         loadIsoFile(isoInput.files[0]);
+    });
+
+    const terminalCmd = document.getElementById("terminalCmd");
+    const terminalSend = document.getElementById("terminalSend");
+
+    const processTerminalCommand = (cmdRaw) => {
+        const cmd = cmdRaw.trim().toLowerCase();
+        if (!cmd) return;
+
+        writeTerminal(`$ ${cmd}`);
+
+        if (cmd === "help") {
+            writeTerminal("supported commands: help, reboot, poweroff, status, clear, loadsiso <name>");
+        } else if (cmd === "reboot") {
+            writeTerminal("rebooting emulator...");
+            powerOn();
+        } else if (cmd === "poweroff") {
+            writeTerminal("powering off...");
+            powerOff();
+        } else if (cmd === "status") {
+            const isoStatus = lastIsoUrl ? "ISO loaded" : "no ISO";
+            const diskStatus = lastHdaUrl ? "HDA attached" : `HDA size ${document.getElementById("diskSize").value}GB`;
+            writeTerminal(`status: ${isoStatus}, ${diskStatus}`);
+        } else if (cmd === "clear") {
+            document.getElementById("bootTerminal").textContent = "";
+        } else {
+            writeTerminal(`unknown command: ${cmd}`);
+        }
+    };
+
+    terminalSend.addEventListener("click", () => {
+        processTerminalCommand(terminalCmd.value);
+        terminalCmd.value = "";
+        terminalCmd.focus();
+    });
+
+    terminalCmd.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            processTerminalCommand(terminalCmd.value);
+            terminalCmd.value = "";
+        }
     });
 
     powerOn();
