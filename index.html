@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebVM — x86 Browser VM</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <header>
+        <h1>WebVM: x86 browser VM (GitHub Pages)</h1>
+        <p>2048 MB RAM, 128 MB video RAM, CD-ROM ISO upload, virtual hard disk creation.</p>
+    </header>
+
+    <main>
+        <section class="controls">
+            <label>ISO file (.iso):
+                <input type="file" id="isoInput" accept=".iso" />
+            </label>
+            <button id="loadIsoBtn">Load ISO and Reboot</button>
+
+            <label>Hard disk size (GB):
+                <input type="number" id="diskSize" min="1" max="32" value="10" />
+            </label>
+            <button id="createDiskBtn">Create Virtual HDA</button>
+
+            <button id="powerBtn">Power On/Restart</button>
+            <button id="powerOffBtn">Power Off</button>
+
+            <pre id="statusLog"></pre>
+        </section>
+
+        <section class="vm">
+            <div id="screen"></div>
+            <div id="serial"></div>
+        </section>
+    </main>
+
+    <footer>
+        <small>
+            Uses <a href="https://github.com/copy/v86" target="_blank" rel="noopener noreferrer">v86</a>.
+            For GitHub Pages deployment, push to `main` and enable Pages from repository settings.
+        </small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/gh/copy/v86/dist/v86.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
