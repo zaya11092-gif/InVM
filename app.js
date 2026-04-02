@@ -159,5 +159,39 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    const vmCmd = document.getElementById("vmCmd");
+    const vmSend = document.getElementById("vmSend");
+
+    const sendToVM = (text) => {
+        if (!emulator) {
+            writeTerminal("No emulator instance found. Start emulator first.");
+            return;
+        }
+
+        if (typeof emulator.keyboard_send === "function") {
+            emulator.keyboard_send(text);
+            writeTerminal(`sent to VM: ${text}`);
+        } else if (typeof emulator.send === "function") {
+            emulator.send(text);
+            writeTerminal(`sent to VM: ${text}`);
+        } else {
+            writeTerminal("VM does not support keyboard_send/send API in this build.");
+        }
+    };
+
+    vmSend.addEventListener("click", () => {
+        if (vmCmd.value.trim() === "") return;
+        sendToVM(vmCmd.value);
+        vmCmd.value = "";
+    });
+
+    vmCmd.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            sendToVM(vmCmd.value);
+            vmCmd.value = "";
+        }
+    });
+
     powerOn();
 });

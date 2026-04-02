@@ -36,8 +36,13 @@
             <h3>Boot Terminal</h3>
             <div id="bootTerminal" class="terminal" aria-live="polite"></div>
             <div class="terminal-input">
-                <input type="text" id="terminalCmd" placeholder="Enter command (eg: bootloader reload)" />
+                <input type="text" id="terminalCmd" placeholder="Enter command (eg: help)" />
                 <button id="terminalSend">Send</button>
+            </div>
+
+            <div class="terminal-input">
+                <input type="text" id="vmCmd" placeholder="Send typed keys to VM console" />
+                <button id="vmSend">Send to VM</button>
             </div>
         </aside>
 
