@@ -98,6 +98,10 @@ const createDisk = () => {
 
 const loadIsoFile = (file) => {
     if (!file) return;
+    if (!file.name.toLowerCase().endsWith('.iso')) {
+        alert("Please select a valid .iso file.");
+        return;
+    }
     const isoUrl = URL.createObjectURL(file);
     lastIsoUrl = isoUrl;
     log(`Loaded ISO: ${file.name} (${file.size} bytes)`);
