@@ -1,4 +1,4 @@
-# WebVM (GitHub Pages x86 in browser)
+# InVM
 
 A minimal static site that runs an x86 VM fully inside the browser using the `v86` emulator engine. Includes:
 
